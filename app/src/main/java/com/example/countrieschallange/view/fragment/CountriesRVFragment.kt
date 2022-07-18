@@ -35,15 +35,19 @@ class CountriesRVFragment: Fragment() {
         countriesViewModel.countryLiveData.observe(viewLifecycleOwner) { state ->
             when (state) {
                 is UiState.Success -> {
+                    countriesViewModel.countriesList = state.data as MutableList<Country>
                     countriesViewModel.countryItemAdapter = CountriesAdapter(
-                        countriesList = state.data as MutableList<Country>
+                        countriesList = countriesViewModel.countriesList
                     )
                     binding?.rvMovies?.adapter = countriesViewModel.countryItemAdapter
                     binding?.spinner?.visibility = View.INVISIBLE
                     binding?.tvErrorMsg?.visibility = View.INVISIBLE
                 }
                 is UiState.Error -> {
-                    binding?.tvErrorMsg?.text = state.message
+                    when (state.code) {
+                        in 500..599 -> binding?.tvErrorMsg?.text = "servers are down :c"
+                        in 400..499 -> binding?.tvErrorMsg?.text = "${state.message} \ncontact support team"
+                    }
                     binding?.tvErrorMsg?.visibility = View.VISIBLE
                     binding?.spinner?.visibility = View.INVISIBLE
                 }

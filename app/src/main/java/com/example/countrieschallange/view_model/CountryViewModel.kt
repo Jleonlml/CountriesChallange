@@ -6,6 +6,7 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.countrieschallange.cons.UiState
+import com.example.countrieschallange.model.Country
 import com.example.countrieschallange.repository.CountryRepositoryImp
 import com.example.countrieschallange.view.adapters.CountriesAdapter
 import kotlinx.coroutines.*
@@ -17,6 +18,7 @@ class CountryViewModel(
 ): ViewModel() {
     private val tag = "CountryViewModel"
     lateinit var countryItemAdapter: CountriesAdapter
+    lateinit var countriesList: MutableList<Country>
 
     private val viewModelSafeScope by lazy {
         viewModelScope + coroutineExceptionHandler
