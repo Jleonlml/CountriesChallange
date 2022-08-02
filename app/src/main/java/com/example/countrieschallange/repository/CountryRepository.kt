@@ -2,6 +2,8 @@ package com.example.countrieschallange.repository
 
 import android.util.Log
 import com.example.countrieschallange.api.CountryService
+import com.example.countrieschallange.cons.NullResponseException
+import com.example.countrieschallange.cons.ResponseIsFailure
 import com.example.countrieschallange.cons.UiState
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
@@ -23,15 +25,12 @@ class CountryRepositoryImp(
                 if (response.isSuccessful) {
                     emit(response.body()?.let {
                         UiState.Success(it)
-                    } ?: throw Exception("Null Response"))
+                    } ?: throw NullResponseException())
                 } else {
-                    val errorMsg = response.errorBody()?.string()
-                    response.errorBody()?.close()  // remember to close it after getting the stream of error body
-                    emit(UiState.Error(response.code(), errorMsg.toString()))  // 3. Error State
+                    throw ResponseIsFailure()
                 }
             } catch (e: Exception) {
-                // catch the errors and run this block instead
-                emit(UiState.Error(0, "Unexpected Exception"))
+                emit(UiState.Error(e))
             }
         }
 }

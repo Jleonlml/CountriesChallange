@@ -10,6 +10,12 @@ class CountriesAdapter(
     private val countriesList: MutableList<Country> = mutableListOf(),
 ): RecyclerView.Adapter<CountriesAdapter.CountryItemViewHolder>() {
 
+    fun setNewCountries(newCountries: List<Country>) {
+        countriesList.clear()
+        countriesList.addAll(newCountries)
+        notifyDataSetChanged()
+    }
+
     inner class CountryItemViewHolder(
         private val binding: CountryItemBinding
     ) : RecyclerView.ViewHolder(binding.root) {

@@ -6,7 +6,10 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.LinearLayout
 import androidx.fragment.app.Fragment
+import androidx.recyclerview.widget.LinearLayoutManager
+import com.example.countrieschallange.cons.ErrorHandler
 import com.example.countrieschallange.cons.UiState
 import com.example.countrieschallange.databinding.CountryRecyclerViewBinding
 import com.example.countrieschallange.model.Country
@@ -16,8 +19,14 @@ import org.koin.androidx.viewmodel.ext.android.viewModel
 
 class CountriesRVFragment: Fragment() {
 
-    private var _binding: CountryRecyclerViewBinding? = null
-    private val binding: CountryRecyclerViewBinding? get() = _binding
+    private val binding by lazy {
+        CountryRecyclerViewBinding.inflate(layoutInflater)
+    }
+
+    private val countryAdapter by lazy {
+        CountriesAdapter()
+    }
+
     private val countriesViewModel by viewModel<CountryViewModel>()
 
     override fun onCreateView(
@@ -25,8 +34,13 @@ class CountriesRVFragment: Fragment() {
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        _binding = CountryRecyclerViewBinding.inflate(layoutInflater)
-        countriesViewModel.setLoadingState()
+
+        binding.rvCountries.apply {
+            layoutManager = LinearLayoutManager(requireContext(), LinearLayoutManager.VERTICAL, false)
+            adapter = countryAdapter
+        }
+
+        startLoading()
         configureObserver()
         return binding?.root
     }
@@ -35,24 +49,14 @@ class CountriesRVFragment: Fragment() {
         countriesViewModel.countryLiveData.observe(viewLifecycleOwner) { state ->
             when (state) {
                 is UiState.Success -> {
-                    countriesViewModel.countriesList = state.data as MutableList<Country>
-                    countriesViewModel.countryItemAdapter = CountriesAdapter(
-                        countriesList = countriesViewModel.countriesList
-                    )
-                    binding?.rvMovies?.adapter = countriesViewModel.countryItemAdapter
                     binding?.spinner?.visibility = View.INVISIBLE
-                    binding?.tvErrorMsg?.visibility = View.INVISIBLE
+                    countryAdapter.setNewCountries(state.data as MutableList<Country>)
                 }
                 is UiState.Error -> {
-                    when (state.code) {
-                        in 500..599 -> binding?.tvErrorMsg?.text = "servers are down :c"
-                        in 400..499 -> binding?.tvErrorMsg?.text = "${state.message} \ncontact support team"
-                    }
-                    binding?.tvErrorMsg?.visibility = View.VISIBLE
+                    ErrorHandler.displayError(context = requireContext(), retry = ::startLoading, message = state.error.message.toString())
                     binding?.spinner?.visibility = View.INVISIBLE
                 }
                 is UiState.Loading -> {
-                    binding?.tvErrorMsg?.visibility = View.INVISIBLE
                     binding?.spinner?.visibility = View.VISIBLE
                     countriesViewModel.getCountries()
                 }
@@ -60,8 +64,7 @@ class CountriesRVFragment: Fragment() {
         }
     }
 
-    override fun onDestroyView() {
-        super.onDestroyView()
-        _binding = null
+    private fun startLoading() {
+        countriesViewModel.setLoadingState()
     }
 }

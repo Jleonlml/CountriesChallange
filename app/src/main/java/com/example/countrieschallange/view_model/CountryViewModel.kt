@@ -15,20 +15,7 @@ import kotlinx.coroutines.flow.collect
 class CountryViewModel(
     private val repositoryImpl: CountryRepositoryImp,
     private val dispatcher: CoroutineDispatcher
-): ViewModel() {
-    private val tag = "CountryViewModel"
-    lateinit var countryItemAdapter: CountriesAdapter
-    lateinit var countriesList: MutableList<Country>
-
-    private val viewModelSafeScope by lazy {
-        viewModelScope + coroutineExceptionHandler
-    }
-
-    private val coroutineExceptionHandler by lazy {
-        CoroutineExceptionHandler { coroutineContext, throwable ->
-            Log.e(tag, "Context: $coroutineContext\nMessage: ${throwable.localizedMessage}", throwable)
-        }
-    }
+): BaseViewModel() {
 
     private val _countryLiveData = MutableLiveData<UiState>()
     val countryLiveData: LiveData<UiState> get() = _countryLiveData
