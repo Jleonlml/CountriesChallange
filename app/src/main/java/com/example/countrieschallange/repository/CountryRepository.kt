@@ -11,16 +11,15 @@ import org.koin.java.KoinJavaComponent.get
 
 
 interface CountryRepository {
-    suspend fun getCountries(): Flow<UiState>
+    fun getCountries(): Flow<UiState>
 }
 
 class CountryRepositoryImp(
     private val service: CountryService  = get(CountryService::class.java)
 ): CountryRepository {
-    override suspend fun getCountries(): Flow<UiState> =
+    override fun getCountries(): Flow<UiState> =
         flow {
             try {
-                // attempt some code
                 val response = service.getCountries()
                 if (response.isSuccessful) {
                     emit(response.body()?.let {

@@ -59,4 +59,13 @@ dependencies {
     // Koin Test features
     testImplementation "io.insert-koin:koin-test:$koin_version"
     implementation "io.insert-koin:koin-android:$koin_version"
+
+    // Mockk
+    testImplementation "io.mockk:mockk:1.12.3"
+    testImplementation "org.jetbrains.kotlinx:kotlinx-coroutines-test:1.6.1-native-mt"
+    testImplementation "androidx.arch.core:core-testing:2.1.0"
+
+    // Truth
+    implementation 'androidx.test.ext:truth:1.4.0'
+    implementation 'com.google.truth:truth:1.1.3'
 }

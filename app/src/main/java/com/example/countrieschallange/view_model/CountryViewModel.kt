@@ -1,16 +1,11 @@
 package com.example.countrieschallange.view_model
 
-import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
-import androidx.lifecycle.ViewModel
-import androidx.lifecycle.viewModelScope
 import com.example.countrieschallange.cons.UiState
-import com.example.countrieschallange.model.Country
 import com.example.countrieschallange.repository.CountryRepositoryImp
 import com.example.countrieschallange.view.adapters.CountriesAdapter
 import kotlinx.coroutines.*
-import kotlinx.coroutines.flow.collect
 
 class CountryViewModel(
     private val repositoryImpl: CountryRepositoryImp,
