@@ -20,6 +20,10 @@ class CountryViewModel(
     private val _countryLiveData = MutableLiveData<UiState>()
     val countryLiveData: LiveData<UiState> get() = _countryLiveData
 
+    val countryAdapter by lazy {
+        CountriesAdapter()
+    }
+
     fun getCountries() {
         viewModelSafeScope.launch(dispatcher) {
             repositoryImpl.getCountries().collect {

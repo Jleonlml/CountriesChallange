@@ -23,10 +23,6 @@ class CountriesRVFragment: Fragment() {
         CountryRecyclerViewBinding.inflate(layoutInflater)
     }
 
-    private val countryAdapter by lazy {
-        CountriesAdapter()
-    }
-
     private val countriesViewModel by viewModel<CountryViewModel>()
 
     override fun onCreateView(
@@ -37,7 +33,7 @@ class CountriesRVFragment: Fragment() {
 
         binding.rvCountries.apply {
             layoutManager = LinearLayoutManager(requireContext(), LinearLayoutManager.VERTICAL, false)
-            adapter = countryAdapter
+            adapter = countriesViewModel.countryAdapter
         }
 
         startLoading()
@@ -50,7 +46,7 @@ class CountriesRVFragment: Fragment() {
             when (state) {
                 is UiState.Success -> {
                     binding?.spinner?.visibility = View.INVISIBLE
-                    countryAdapter.setNewCountries(state.data as MutableList<Country>)
+                    countriesViewModel.countryAdapter.setNewCountries(state.data as MutableList<Country>)
                 }
                 is UiState.Error -> {
                     ErrorHandler.displayError(context = requireContext(), retry = ::startLoading, message = state.error.message.toString())
